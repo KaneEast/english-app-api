@@ -16,20 +16,28 @@ services:
              python manage.py runserver 0.0.0.0:8000"
     environment:
       - DB_HOST=db
-      - DB_NAME=dev_db
+      - DB_NAME=devdb
       - DB_USER=devuser
-      - DB_PASSWORD=changeme
+      - DB_PASS=changeme
     depends_on:
       - db
+    networks:           # 添加网络配置
+      - app-network
 
   db:
     image: postgres:13-alpine
     volumes:
       - dev-db-data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=dev_db
+      - POSTGRES_DB=devdb
       - POSTGRES_USER=devuser
       - POSTGRES_PASSWORD=changeme
+    networks:           # 添加网络配置
+      - app-network
+
+networks:              # 定义网络
+  app-network:
+    driver: bridge
 
 volumes:
   dev-db-data:
