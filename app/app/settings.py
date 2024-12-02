@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 import os
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -40,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'core',
     'rest_framework',
+    'rest_framework_simplejwt.token_blacklist',
     'rest_framework.authtoken',
     'drf_spectacular',
     'user',
@@ -138,4 +140,20 @@ AUTH_USER_MODEL = 'core.User'
 
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    # 设置在全局起作用，但如果你在具体视图中使用了 pagination_class = CustomPagination，则会覆盖全局默认值。
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,  # 每页显示的用户数量
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=7),  # 设置 Access Token 有效期为 15 分钟
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=180),     # 设置 Refresh Token 有效期为 7 天
+    'ROTATE_REFRESH_TOKENS': True,                   # 旋转 Refresh Token，每次刷新都会生成新的 Refresh Token
+    'BLACKLIST_AFTER_ROTATION': True,                # 在旋转后使旧 Refresh Token 失效
+    'ALGORITHM': 'HS256',                            # 签名算法（默认是 HS256）
+    'SIGNING_KEY': SECRET_KEY,                       # 使用 Django 的 SECRET_KEY 作为签名密钥
+    'AUTH_HEADER_TYPES': ('Bearer',),                # 认证头类型，通常是 Bearer
 }

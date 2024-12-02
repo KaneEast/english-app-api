@@ -11,9 +11,19 @@ from core import models
 class UserAdmin(BaseUserAdmin):
     """Add the fields to the user page"""
     ordering = ['id']
-    list_display = ['email', 'name']
+    list_display = ['email', 'name', 'is_active', 'is_staff']
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
+        (
+            _('Personal Info'),
+            {
+                'fields': (
+                    'name',
+                    'avatar',
+                    'joined_at',
+                )
+            }
+        ),
         (
             _('Permissions'),
             {
@@ -24,9 +34,17 @@ class UserAdmin(BaseUserAdmin):
                 )
             }
         ),
-        ('Important dates', {'fields': ('last_login',)}),
+        ('Important dates', {'fields': ('last_login_time',)}),
+        (
+            _('Relationships'),
+            {
+                'fields': (
+                    'friends',
+                )
+            }
+        ),
     )
-    readonly_fields = ['last_login']
+    readonly_fields = ['last_login_time', 'joined_at']
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
@@ -35,6 +53,7 @@ class UserAdmin(BaseUserAdmin):
                 'password1',
                 'password2',
                 'name',
+                'avatar',
                 'is_active',
                 'is_staff',
                 'is_superuser',
