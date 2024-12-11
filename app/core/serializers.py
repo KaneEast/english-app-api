@@ -23,17 +23,41 @@ from django.utils.timezone import now
 #     def create(self, validated_data):
 #         """Create and return a user with encrypted password"""
 #         return User.objects.create_user(**validated_data)
-class UserSerializer(serializers.ModelSerializer):
-    """Serializer for the user object"""
 
+# class UserSerializer(serializers.ModelSerializer):
+#     """Serializer for the user object"""
+
+#     class Meta:
+#         model = User
+#         fields = ['id', 'name', 'email', 'avatar', 'bio', 'joined_at']  # 移除 email 和 password
+#         read_only_fields = ['id', 'joined_at']
+
+#     def create(self, validated_data):
+#         """Create and return a user with encrypted password"""
+#         return User.objects.create_user(**validated_data)
+
+# 用于注册的序列化器
+class UserRegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'name', 'avatar', 'bio', 'joined_at']  # 移除 email 和 password
-        read_only_fields = ['id', 'joined_at']
+        fields = ['email', 'name', 'password']
+        extra_kwargs = {
+            'password': {'write_only': True}
+        }
 
     def create(self, validated_data):
-        """Create and return a user with encrypted password"""
-        return User.objects.create_user(**validated_data)
+        return User.objects.create_user(
+            email=validated_data['email'],
+            name=validated_data.get('name', ''),
+            password=validated_data['password']
+        )
+
+
+# 用于返回用户信息的序列化器
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'name', 'avatar', 'bio', 'joined_at']
 
 
 class UserListSerializer(serializers.ModelSerializer):

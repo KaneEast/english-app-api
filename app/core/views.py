@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from core.serializers import UserSerializer, UserListSerializer, UserProfileSerializer, CustomTokenObtainPairSerializer
+from core.serializers import UserSerializer, UserRegisterSerializer, UserListSerializer, UserProfileSerializer, CustomTokenObtainPairSerializer
 from core.pagination import CustomPagination
 from .models import User
 from django.shortcuts import get_object_or_404
@@ -17,7 +17,7 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
 class RegisterUserView(generics.GenericAPIView):
-    serializer_class = UserSerializer
+    serializer_class = UserRegisterSerializer
 
     def post(self, request):
         serializer = self.get_serializer(data=request.data)
