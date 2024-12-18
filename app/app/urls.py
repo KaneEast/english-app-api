@@ -32,6 +32,8 @@ urlpatterns = [
     ),
     path('api/core/', include('core.urls')),
     path('api/posts/', include('posts.urls')),
+    path('api/quotes/', include('quotes.urls')),
+    path('api/', include('materials.urls')),
 ]
 
 if settings.DEBUG:
